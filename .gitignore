@@ -1,0 +1,6 @@
+.classpath
+.factorypath
+target/*
+.DS_Store
+.project
+.settings/*
