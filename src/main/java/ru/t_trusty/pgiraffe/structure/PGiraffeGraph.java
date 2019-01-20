@@ -1,12 +1,12 @@
-import java.util.Iterator;
+package ru.t_trusty.pgiraffe.structure;
 
+import java.util.Iterator;
 import org.apache.commons.configuration.Configuration;
 import org.apache.tinkerpop.gremlin.process.computer.GraphComputer;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Transaction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.util.StringFactory;
 
 /**
@@ -14,50 +14,60 @@ import org.apache.tinkerpop.gremlin.structure.util.StringFactory;
  */
 @Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_STANDARD)
 @Graph.OptIn(Graph.OptIn.SUITE_STRUCTURE_INTEGRATE)
-@Graph.OptIn(Graph.OptIn.SUITE_PROCESS_STANDARD)
-@Graph.OptIn(Graph.OptIn.SUITE_PROCESS_COMPUTER)
+// @Graph.OptIn(Graph.OptIn.SUITE_PROCESS_STANDARD)
+// @Graph.OptIn(Graph.OptIn.SUITE_PROCESS_COMPUTER)
 public final class PGiraffeGraph implements Graph {
 
     private final PGiraffeFeatures features = new PGiraffeFeatures();
-    
+
+    @Override
     public Vertex addVertex(Object... keyValues) {
         return null;
     }
 
+    @Override
     public <C extends GraphComputer> C compute(Class<C> graphComputerClass) throws IllegalArgumentException {
         return null;
     }
 
+    @Override
     public GraphComputer compute() throws IllegalArgumentException {
         return null;
     }
 
+    @Override
     public Iterator<Vertex> vertices(Object... vertexIds) {
         return null;
     }
 
+    @Override
     public Iterator<Edge> edges(Object... edgeIds) {
         return null;
     }
 
+    @Override
     public Transaction tx() {
         // TODO: add transactions support
-        throw Exceptions.transactionsNotSupported()
+        throw Exceptions.transactionsNotSupported();
     }
 
+    @Override
     public void close() throws Exception {
 
     }
 
-	public Variables variables() {
-        // TODO: add variables support - http://tinkerpop.apache.org/docs/current/reference/#graph-variables
+    @Override
+    public Variables variables() {
+        // TODO: add variables support -
+        // http://tinkerpop.apache.org/docs/current/reference/#graph-variables
         // low priority
         throw Exceptions.variablesNotSupported();
-	}
+    }
 
-	public Configuration configuration() {
-		return null;
-	}
+    @Override
+    public Configuration configuration() {
+        return null;
+    }
 
     @Override
     public Features features() {
@@ -76,6 +86,7 @@ public final class PGiraffeGraph implements Graph {
         public GraphFeatures graph() {
             return graphFeatures;
         }
+
         @Override
         public EdgeFeatures edge() {
             return edgeFeatures;
@@ -93,7 +104,7 @@ public final class PGiraffeGraph implements Graph {
     }
 
     public class PGiraffeVertexFeatures implements Features.VertexFeatures {
-        
+
         private final PGiraffeVertexPropertyFeatures vertexPropertyFeatures = new PGiraffeVertexPropertyFeatures();
 
         private PGiraffeVertexFeatures() {
@@ -118,7 +129,7 @@ public final class PGiraffeGraph implements Graph {
 
         // @Override
         // public VertexProperty.Cardinality getCardinality(final String key) {
-        //     // TODO: add default?
+        // // TODO: add default?
         // }
     }
 
@@ -133,8 +144,19 @@ public final class PGiraffeGraph implements Graph {
 
         @Override
         public boolean willAllowId(final Object id) {
-             // TODO: add true checking with some vertexIdManager
-             return true;
+            // TODO: add true checking with some vertexIdManager
+            return true;
         }
     }
- }
+
+    public class PGiraffeEdgeFeatures implements Features.EdgeFeatures {
+        // TODO: implement it
+        public PGiraffeEdgeFeatures() {
+        }
+    }
+
+    public class PGiraffeGraphFeatures implements Features.GraphFeatures {
+        public PGiraffeGraphFeatures() {
+        }
+    }
+}
