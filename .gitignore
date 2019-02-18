@@ -10,3 +10,12 @@ mds/
 .classpath
 .project
 .DS_Store
+.vscode/
+
+target/*
+.project
+PGiraffe/.settings/*
+.idea/
+
+
+PGiraffe/pgdatadir/*

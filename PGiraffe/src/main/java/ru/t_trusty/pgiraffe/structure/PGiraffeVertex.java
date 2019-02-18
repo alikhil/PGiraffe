@@ -31,8 +31,10 @@ public final class PGiraffeVertex extends PGiraffeElement implements Vertex {
         return null;
     }
 
+    @Override
     public Graph graph() {
-        return null;
+
+        return this.graph;
     }
 
     public void remove() {
@@ -41,13 +43,17 @@ public final class PGiraffeVertex extends PGiraffeElement implements Vertex {
 
     @Override
     public Edge addEdge(String label, Vertex inVertex, Object... keyValues) {
-        return null;
+
+        if (inVertex == null) throw Graph.Exceptions.argumentCanNotBeNull("inVertex");
+        if (this.removed) throw elementAlreadyRemoved(Vertex.class, this.id);
+        return PGiraffeHelper.addEdge(this.graph, this, (PGiraffeVertex) inVertex, label, keyValues);
     }
 
     @Override
     public <V> VertexProperty<V> property(Cardinality cardinality, String key, V value, Object... keyValues) {
         return null;
     }
+
 
     @Override
     public Iterator<Edge> edges(Direction direction, String... edgeLabels) {
