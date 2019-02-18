@@ -14,22 +14,29 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 public final class PGiraffeEdge extends PGiraffeElement implements Edge {
 
-    
+
+    private final Vertex outVertex;
+    private final Vertex inVertex;
+
     protected PGiraffeEdge(final Object id, final Vertex outVertex, final String label, final Vertex inVertex) {
         super(id, label);
+        this.inVertex = inVertex;
+        this.outVertex = outVertex;
 
     }
 
     public Object id() {
-        return null;
+
+        return this.id;
     }
 
     public String label() {
-        return null;
+
+        return this.label;
     }
 
     public Graph graph() {
-        return null;
+        return this.inVertex.graph();
     }
 
     public <V> Property<V> property(String key, V value) {

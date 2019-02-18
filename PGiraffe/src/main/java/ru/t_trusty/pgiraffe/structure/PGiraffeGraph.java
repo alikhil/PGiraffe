@@ -9,10 +9,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.BaseConfiguration;
 
 import org.apache.tinkerpop.gremlin.process.computer.GraphComputer;
-import org.apache.tinkerpop.gremlin.structure.Edge;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.structure.Transaction;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.structure.*;
 import org.apache.tinkerpop.gremlin.structure.util.ElementHelper;
 import org.apache.tinkerpop.gremlin.structure.util.StringFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -39,6 +36,7 @@ public final class PGiraffeGraph implements Graph {
     private final PGiraffeFeatures features = new PGiraffeFeatures();
     private final EntityManagerFactory entityManagerFactory;
     private final IdManager idManager;
+    private final StoreEngine engine;
 
     private String name;
     private Configuration configuration;
@@ -62,6 +60,7 @@ public final class PGiraffeGraph implements Graph {
         this.entityManagerFactory = getEntityManagerFactory(this.configuration);
         this.name = configuration.getString(GREMLIN_PGIRAFFE_GRAPH_NAME, "pgiraffe");
         this.idManager = new SimpleIdManager();
+        this.engine = new SimpleStoreEngine(this.entityManagerFactory);
     }
 
     public static PGiraffeGraph open() {
@@ -73,11 +72,30 @@ public final class PGiraffeGraph implements Graph {
     }
 
     @Override
-    public Vertex addVertex(Object... keyValues) {
+    public Vertex addVertex(final Object... keyValues) {
         ElementHelper.legalPropertyKeyValueArray(keyValues);
+        Object idValue = ElementHelper.getIdValue(keyValues).orElse(null);
+        final String label = ElementHelper.getLabelValue(keyValues).orElse(Vertex.DEFAULT_LABEL);
 
-        return null;
+        if (null != idValue) {
+            if (this.vertexExists(idValue))
+                throw Exceptions.vertexWithIdAlreadyExists(idValue);
+        } else {
+            idValue = nextId(StoreType.VERTEX);
+        }
+
+        final Vertex vertex = new PGiraffeVertex(idValue, label, this);
+        this.engine.saveVertex(vertex);
+
+        ElementHelper.attachProperties(vertex, VertexProperty.Cardinality.list, keyValues);
+        return vertex;
     }
+
+    private boolean vertexExists(Object idValue) {
+        // TODO: implement this
+        return false;
+    }
+
 
     @Override
     public <C extends GraphComputer> C compute(Class<C> graphComputerClass) throws IllegalArgumentException {
@@ -148,6 +166,8 @@ public final class PGiraffeGraph implements Graph {
         return false;
     }
 
+
+
     public IdManager getIdManager() {
         return idManager;
     }
@@ -156,8 +176,9 @@ public final class PGiraffeGraph implements Graph {
         return idManager.getNextId(this, store);
     }
 
-    public void saveEdge(Edge edge) {
-        throw new NotImplementedException();
+
+    public StoreEngine engine() {
+        return engine;
     }
 
     public class PGiraffeFeatures implements Features {

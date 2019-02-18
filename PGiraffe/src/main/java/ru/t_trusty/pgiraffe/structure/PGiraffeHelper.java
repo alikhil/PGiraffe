@@ -22,7 +22,7 @@ public final class PGiraffeHelper {
         }
         final Edge edge = new PGiraffeEdge(idValue, outVertex, label, inVertex);
         ElementHelper.attachProperties(edge, keyValues);
-        graph.saveEdge(edge);
+        graph.engine().saveEdge(edge);
         PGiraffeHelper.addOutEdge(outVertex, label, edge);
         PGiraffeHelper.addInEdge(inVertex, label, edge);
         return null;
