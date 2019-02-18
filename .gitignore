@@ -9,3 +9,4 @@ simple-ext/
 mds/
 .classpath
 .project
+.DS_Store
