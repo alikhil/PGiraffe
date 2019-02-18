@@ -1,7 +1,11 @@
+tinkergraph/
+c-inc/
+go-inc/
+references/
+target/
+templat/
+thesis/
+simple-ext/
+mds/
 .classpath
-.factorypath
-target/*
-.DS_Store
 .project
-.settings/*
-.idea/
