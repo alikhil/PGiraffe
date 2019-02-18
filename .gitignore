@@ -11,7 +11,9 @@ mds/
 .project
 .DS_Store
 .vscode/
+bin/
 
+PGiraffe/bin/
 target/*
 .project
 PGiraffe/.settings/*
