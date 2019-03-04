@@ -1,13 +1,20 @@
 
 package ru.t_trusty.pgiraffe.structure;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty.Cardinality;
+import org.apache.tinkerpop.gremlin.structure.util.ElementHelper;
+import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils;
 
 
 /**
@@ -24,11 +31,16 @@ public final class PGiraffeVertex extends PGiraffeElement implements Vertex {
 
     @Override
     public Object id() {
-        return null;
+        return this.id;
+    }
+
+    @Override
+    public void removeProperty(String key) {
+        // todo: implement this
     }
 
     public String label() {
-        return null;
+        return this.label;
     }
 
     @Override
@@ -38,7 +50,15 @@ public final class PGiraffeVertex extends PGiraffeElement implements Vertex {
     }
 
     public void remove() {
+        // remove all in and out edges of current vertex
+        final List<Edge> edges = new ArrayList<>();
+        this.edges(Direction.BOTH).forEachRemaining(edges::add);
+        edges.stream()
+                .filter(edge -> !((PGiraffeEdge) edge).removed)
+                .forEach(Edge::remove);
 
+        this.graph.engine().removeVertex(this);
+        this.removed = true;
     }
 
     @Override
@@ -57,17 +77,29 @@ public final class PGiraffeVertex extends PGiraffeElement implements Vertex {
 
     @Override
     public Iterator<Edge> edges(Direction direction, String... edgeLabels) {
-        return null;
+
+        return this.graph.engine().getEdges(this, direction, edgeLabels);
     }
 
     @Override
     public Iterator<Vertex> vertices(Direction direction, String... edgeLabels) {
-        return null;
+
+        return direction.equals(Direction.BOTH) ?
+                IteratorUtils.concat(
+                        IteratorUtils.map(this.edges(Direction.OUT, edgeLabels), Edge::inVertex),
+                        IteratorUtils.map(this.edges(Direction.IN, edgeLabels), Edge::outVertex)) :
+                IteratorUtils.map(this.edges(direction, edgeLabels), edge -> edge.vertices(direction.opposite()).next());
     }
 
     @Override
     public <V> Iterator<VertexProperty<V>> properties(String... propertyKeys) {
-        return null;
+
+        if (this.removed) {
+            return Collections.emptyIterator();
+        }
+//        if (null == this.properties) return Collections.emptyIterator();
+        return this.graph.engine().getVertexProperties(this, propertyKeys);
+
     }
 
 }

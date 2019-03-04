@@ -84,7 +84,7 @@ public final class PGiraffeGraph implements Graph {
             idValue = nextId(StoreType.VERTEX);
         }
 
-        final Vertex vertex = new PGiraffeVertex(idValue, label, this);
+        final PGiraffeVertex vertex = new PGiraffeVertex(idValue, label, this);
         this.engine.saveVertex(vertex);
 
         ElementHelper.attachProperties(vertex, VertexProperty.Cardinality.list, keyValues);

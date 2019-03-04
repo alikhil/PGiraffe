@@ -39,4 +39,5 @@ public abstract class PGiraffeElement implements Element {
         return new IllegalStateException(String.format("%s with id %s was removed.", clazz.getSimpleName(), id));
     }
 
+    public abstract void removeProperty(String key);
 }

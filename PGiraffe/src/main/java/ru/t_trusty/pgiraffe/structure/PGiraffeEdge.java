@@ -1,5 +1,6 @@
 package ru.t_trusty.pgiraffe.structure;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;
@@ -7,6 +8,7 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils;
 
 /**
  * @author Alik Khilazhev (https://github.com/alikhil)
@@ -45,10 +47,21 @@ public final class PGiraffeEdge extends PGiraffeElement implements Edge {
 
     public void remove() {
 
+        // remove edge should do all the dirty work with
+        ((PGiraffeGraph) graph()).engine().removeEdge(this);
+        removed = true;
     }
 
     public Iterator<Vertex> vertices(Direction direction) {
-        return null;
+        if (removed) return Collections.emptyIterator();
+        switch (direction) {
+            case OUT:
+                return IteratorUtils.of(this.outVertex);
+            case IN:
+                return IteratorUtils.of(this.inVertex);
+            default:
+                return IteratorUtils.of(this.outVertex, this.inVertex);
+        }
     }
 
     public <V> Iterator<Property<V>> properties(String... propertyKeys) {
