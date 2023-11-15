@@ -21,7 +21,7 @@ limitations under the License.
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <tinkerpop.version>3.3.4</tinkerpop.version>
+        <tinkerpop.version>3.5.5</tinkerpop.version>
     </properties>
     <groupId>ru.t_trusty.pgiraffe</groupId>
     <version>0.0.1</version>
